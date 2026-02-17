@@ -25,6 +25,62 @@ ROLE_THEME = {
 # -------------------------------------------------
 # HELPERS
 # -------------------------------------------------
+def get_available_date_range(dfs):
+    valid_dates = []
+
+    for df in dfs:
+        if df is not None and not df.empty:
+            valid_dates.append(df["timestamp"].min())
+            valid_dates.append(df["timestamp"].max())
+
+    if not valid_dates:
+        return None, None
+
+    return min(valid_dates).date(), max(valid_dates).date()
+
+
+def validate_date_range(start, end, min_date, max_date):
+    if min_date is None:
+        return False
+
+    if start > end:
+        st.error("❌ Start date cannot be after End date.")
+        return False
+
+    if end < min_date or start > max_date:
+        if end < min_date or start > max_date:
+    st.markdown(
+        f"""
+        <div style='padding:20px;
+                    background-color:#ffe6e6;
+                    border-radius:10px;
+                    border:2px solid #ff4d4d;'>
+
+        <h3 style='color:#cc0000;'>🚫 Date Range Error</h3>
+
+        <p style='font-size:16px;'>
+        The selected date range is outside the available dataset.
+        </p>
+
+        <p>
+        <b>Available Data:</b><br>
+        {min_date} → {max_date}
+        </p>
+
+        <p>
+        Please adjust the date selector in the sidebar.
+        </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    
+
+        return False
+
+    return True
+
 def role_header(role):
     st.markdown(
         f"<h1 style='color:{ROLE_THEME[role]};'>{role} Dashboard</h1>",
@@ -93,8 +149,22 @@ role = st.sidebar.selectbox(
     ["Athlete", "Coach", "Trainer", "Team Doctor"]
 )
 
-start_date = st.sidebar.date_input("Start Date")
-end_date = st.sidebar.date_input("End Date")
+# Get global available date range
+min_date, max_date = get_available_date_range([
+    calories, activity, heart, sleep, stress,
+    energy, spo2, bp, ecg, falls, body, antiox
+])
+
+if min_date is None:
+    st.error("No valid data found.")
+    st.stop()
+
+start_date = st.sidebar.date_input("Start Date", min_value=min_date, max_value=max_date, value=min_date)
+end_date = st.sidebar.date_input("End Date", min_value=min_date, max_value=max_date, value=max_date)
+
+if not validate_date_range(start_date, end_date, min_date, max_date):
+    st.stop()
+
 
 # Apply filtering
 calories = filter_dates(calories, start_date, end_date)
