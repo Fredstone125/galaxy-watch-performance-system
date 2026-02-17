@@ -48,33 +48,32 @@ def validate_date_range(start, end, min_date, max_date):
         return False
 
     if end < min_date or start > max_date:
-        if end < min_date or start > max_date:
-    st.markdown(
-        f"""
-        <div style='padding:20px;
-                    background-color:#ffe6e6;
-                    border-radius:10px;
-                    border:2px solid #ff4d4d;'>
-
-        <h3 style='color:#cc0000;'>🚫 Date Range Error</h3>
-
-        <p style='font-size:16px;'>
-        The selected date range is outside the available dataset.
-        </p>
-
-        <p>
-        <b>Available Data:</b><br>
-        {min_date} → {max_date}
-        </p>
-
-        <p>
-        Please adjust the date selector in the sidebar.
-        </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        st.markdown(
+            f"""
+            <div style='padding:20px;
+                        background-color:#ffe6e6;
+                        border-radius:10px;
+                        border:2px solid #ff4d4d;'>
+    
+            <h3 style='color:#cc0000;'>🚫 Date Range Error</h3>
+    
+            <p style='font-size:16px;'>
+            The selected date range is outside the available dataset.
+            </p>
+    
+            <p>
+            <b>Available Data:</b><br>
+            {min_date} → {max_date}
+            </p>
+    
+            <p>
+            Please adjust the date selector in the sidebar.
+            </p>
+    
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
     
 
         return False
