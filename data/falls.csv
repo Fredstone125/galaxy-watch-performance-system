@@ -1,0 +1,4 @@
+timestamp,fall_detected,severity
+2026-03-05 08:00:00,1,minor
+2026-03-18 08:00:00,1,moderate
+2026-03-27 08:00:00,1,severe
