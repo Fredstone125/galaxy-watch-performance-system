@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide"
 )
 
-DATA_PATH = "data/"
+BASE_PATH = "data/"
 
 # -------------------------------------------------
 # ROLE THEMES
@@ -157,6 +157,12 @@ if menstrual is not None and not menstrual.empty:
 # SIDEBAR
 # -------------------------------------------------
 st.sidebar.title("System Controls")
+
+import os
+
+users = os.listdir(BASE_PATH)
+selected_user = st.sidebar.selectbox("Select Athlete", users)
+DATA_PATH = f"{BASE_PATH}{selected_user}/"
 
 role = st.sidebar.selectbox(
     "Select Role",
