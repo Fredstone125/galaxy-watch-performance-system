@@ -38,6 +38,18 @@ def get_available_date_range(dfs):
 
     return min(valid_dates).date(), max(valid_dates).date()
 
+def determine_phase(cycle_day):
+    if 1 <= cycle_day <= 5:
+        return "Menstrual"
+    elif 6 <= cycle_day <= 13:
+        return "Follicular"
+    elif cycle_day == 14:
+        return "Ovulation"
+    elif 15 <= cycle_day <= 28:
+        return "Luteal"
+    else:
+        return "Unknown"
+
 
 def validate_date_range(start, end, min_date, max_date):
     if min_date is None:
@@ -138,6 +150,8 @@ falls = load_csv("falls.csv")
 body = load_csv("body_comp.csv")
 antiox = load_csv("antioxidants.csv")
 menstrual = load_csv("menstrual_cycle.csv")
+if menstrual is not None and not menstrual.empty:
+    menstrual["calculated_phase"] = menstrual["cycle_day"].apply(determine_phase)
 
 # -------------------------------------------------
 # SIDEBAR
@@ -204,15 +218,21 @@ if role == "Athlete":
     if stress is not None:
         line_chart(stress, "stress_score", "Stress Trend")
 
-    if menstrual is not None:
-        st.subheader("Menstrual Cycle Phase")
-        st.write(
-            f"Current Phase: {menstrual['phase'].iloc[-1]}"
-        )
-    elif menstrual is None:
-        pass  # File not provided → show nothing
-    else:
-        st.info("No menstrual data available for selected date range.")
+    if menstrual is not None and not menstrual.empty:
+    
+        # Find row matching selected end_date
+        selected_row = menstrual[
+            menstrual["timestamp"].dt.date == end_date
+        ]
+    
+        if not selected_row.empty:
+            current_phase = selected_row["calculated_phase"].iloc[0]
+    
+            st.subheader("Menstrual Cycle Phase")
+            st.success(f"Current Phase (as of {end_date}): {current_phase}")
+    
+        else:
+            st.info("No menstrual data available for selected end date.")
 
 # =====================
 # COACH
