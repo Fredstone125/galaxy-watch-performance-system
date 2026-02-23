@@ -137,6 +137,7 @@ ecg = load_csv("ecg.csv")
 falls = load_csv("falls.csv")
 body = load_csv("body_comp.csv")
 antiox = load_csv("antioxidants.csv")
+menstrual = load_csv("menstrual_cycle.csv")
 
 # -------------------------------------------------
 # SIDEBAR
@@ -203,6 +204,16 @@ if role == "Athlete":
     if stress is not None:
         line_chart(stress, "stress_score", "Stress Trend")
 
+    if menstrual is not None:
+        st.subheader("Menstrual Cycle Phase")
+        st.write(
+            f"Current Phase: {menstrual['phase'].iloc[-1]}"
+        )
+    elif menstrual is None:
+        pass  # File not provided → show nothing
+    else:
+        st.info("No menstrual data available for selected date range.")
+
 # =====================
 # COACH
 # =====================
@@ -267,6 +278,20 @@ elif role == "Team Doctor":
         )
         st.plotly_chart(fig, use_container_width=True)
 
+    if menstrual is not None:
+        st.subheader("Menstrual Cycle Monitoring")
+        fig = px.line(
+            menstrual,
+            x="timestamp",
+            y="symptom_score",
+            title="Symptom Severity Trend"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    elif menstrual is None:
+        pass  # File not provided → show nothing
+    else:
+        st.info("No menstrual data available for selected date range.")
+    
     if falls is not None:
         st.subheader("Fall Events")
         st.dataframe(falls[falls["fall_detected"] == 1])
