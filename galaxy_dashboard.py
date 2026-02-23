@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
 
 # -------------------------------------------------
 # PAGE CONFIG
@@ -11,6 +12,10 @@ st.set_page_config(
 )
 
 BASE_PATH = "data/"
+
+users = os.listdir(BASE_PATH)
+selected_user = st.sidebar.selectbox("Select Athlete", users)
+DATA_PATH = f"{BASE_PATH}{selected_user}/"
 
 # -------------------------------------------------
 # ROLE THEMES
@@ -157,12 +162,6 @@ if menstrual is not None and not menstrual.empty:
 # SIDEBAR
 # -------------------------------------------------
 st.sidebar.title("System Controls")
-
-import os
-
-users = os.listdir(BASE_PATH)
-selected_user = st.sidebar.selectbox("Select Athlete", users)
-DATA_PATH = f"{BASE_PATH}{selected_user}/"
 
 role = st.sidebar.selectbox(
     "Select Role",
