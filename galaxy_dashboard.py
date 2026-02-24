@@ -159,7 +159,7 @@ def role_header(role):
             box-shadow: 0 0 20px rgba(0,191,255,0.4);
         ">
             <h1 style='color:white; margin:0;'>
-                ⚡ {role} Performance Dashboard
+                {role} Performance Dashboard
             </h1>
         </div>
         """,
@@ -236,7 +236,7 @@ if menstrual is not None and not menstrual.empty:
 # SIDEBAR
 # -------------------------------------------------
 st.sidebar.markdown("""
-<h2 style='color:#00BFFF;'>⚡ System Controls</h2>
+<h2 style='color:#00BFFF;'>System Controls</h2>
 """, unsafe_allow_html=True)
 
 role = st.sidebar.selectbox(
