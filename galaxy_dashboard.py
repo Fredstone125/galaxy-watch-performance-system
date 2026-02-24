@@ -1,4 +1,55 @@
 import streamlit as st
+st.markdown("""
+<style>
+
+/* Main background */
+.stApp {
+    background-color: #0E1117;
+}
+
+/* Sidebar styling */
+section[data-testid="stSidebar"] {
+    background-color: #111827;
+}
+
+/* Headers */
+h1 {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+h2, h3 {
+    font-weight: 600;
+    color: #00BFFF;
+}
+
+/* Metric cards */
+div[data-testid="metric-container"] {
+    background-color: #161B22;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #00BFFF;
+    box-shadow: 0 0 15px rgba(0,191,255,0.3);
+}
+
+/* Buttons */
+button {
+    border-radius: 8px !important;
+}
+
+/* Select boxes */
+div[data-baseweb="select"] {
+    background-color: #161B22 !important;
+}
+
+/* Dataframes */
+.css-1d391kg {
+    background-color: #161B22;
+}
+
+</style>
+""", unsafe_allow_html=True)
 import pandas as pd
 import plotly.express as px
 import os
