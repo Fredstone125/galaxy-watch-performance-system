@@ -150,7 +150,19 @@ def validate_date_range(start, end, min_date, max_date):
 
 def role_header(role):
     st.markdown(
-        f"<h1 style='color:{ROLE_THEME[role]};'>{role} Dashboard</h1>",
+        f"""
+        <div style="
+            padding:20px;
+            background: linear-gradient(90deg, #00BFFF, #0066FF);
+            border-radius:15px;
+            margin-bottom:30px;
+            box-shadow: 0 0 20px rgba(0,191,255,0.4);
+        ">
+            <h1 style='color:white; margin:0;'>
+                ⚡ {role} Performance Dashboard
+            </h1>
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
@@ -163,18 +175,29 @@ def load_csv(name):
         return None
 
 def line_chart(df, column, title):
+
     fig = px.line(
         df,
         x="timestamp",
         y=column,
         title=title,
-        markers=True
+        markers=True,
+        template="plotly_dark"
     )
+
+    fig.update_traces(
+        line=dict(color="#00BFFF", width=3),
+        marker=dict(size=6)
+    )
+
     fig.update_layout(
+        title_font_size=20,
+        title_x=0.5,
         hovermode="x unified",
-        title_x=0.5
+        paper_bgcolor="#0E1117",
+        plot_bgcolor="#0E1117"
     )
-    fig.update_traces(line_width=3)
+
     st.plotly_chart(fig, use_container_width=True)
 
 def metric_row(metrics):
@@ -212,7 +235,9 @@ if menstrual is not None and not menstrual.empty:
 # -------------------------------------------------
 # SIDEBAR
 # -------------------------------------------------
-st.sidebar.title("System Controls")
+st.sidebar.markdown("""
+<h2 style='color:#00BFFF;'>⚡ System Controls</h2>
+""", unsafe_allow_html=True)
 
 role = st.sidebar.selectbox(
     "Select Role",
@@ -267,12 +292,24 @@ if role == "Athlete":
         ("Active Minutes", int(activity["active_minutes"].iloc[-1]) if activity is not None else 0)
     ])
 
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
+
     if sleep is not None:
         sleep["sleep_score"] = sleep[["deep","light","rem"]].sum(axis=1)
         line_chart(sleep, "sleep_score", "Sleep Quality")
 
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
+    
     if stress is not None:
         line_chart(stress, "stress_score", "Stress Trend")
+
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
 
     if menstrual is not None and not menstrual.empty:
     
@@ -284,7 +321,7 @@ if role == "Athlete":
         if not selected_row.empty:
             current_phase = selected_row["calculated_phase"].iloc[0]
     
-            st.subheader("Menstrual Cycle Phase")
+            st.markdown("### 🔷 Menstrual Cycle Phase")
             st.success(f"Current Phase (as of {end_date}): {current_phase}")
     
         else:
@@ -299,8 +336,23 @@ elif role == "Coach":
         st.warning("⚠️ Athlete may be under-recovered.")
 
     line_chart(calories, "calories", "Calories Burned")
+
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
+    
     line_chart(activity, "active_minutes", "Active Minutes")
+
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
+    
     line_chart(heart, "bpm", "Heart Rate")
+
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
+    
     line_chart(energy, "energy_score", "Readiness Score")
 
 # =====================
@@ -318,9 +370,17 @@ elif role == "Trainer":
         fig = px.bar(zone_counts, title="Heart Rate Zones")
         st.plotly_chart(fig, use_container_width=True)
 
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
+
     if body is not None:
         line_chart(body, "body_fat", "Body Fat %")
         line_chart(body, "muscle_mass", "Muscle Mass")
+
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
 
     if sleep is not None:
         fig = px.area(
@@ -342,8 +402,21 @@ elif role == "Team Doctor":
     if ecg is not None:
         st.metric("ECG Abnormal Events", int(ecg["abnormal_flag"].sum()))
 
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
+
     line_chart(heart, "bpm", "Heart Rate")
+
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
+    
     line_chart(spo2, "oxygen_percent", "Blood Oxygen")
+
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
     
     if bp is not None:
         fig = px.line(
@@ -353,6 +426,10 @@ elif role == "Team Doctor":
             title="Blood Pressure"
         )
         st.plotly_chart(fig, use_container_width=True)
+
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
 
     if menstrual is not None:
         st.subheader("Menstrual Cycle Monitoring")
@@ -367,6 +444,10 @@ elif role == "Team Doctor":
         pass  # File not provided → show nothing
     else:
         st.info("No menstrual data available for selected date range.")
+
+    st.markdown("""
+    <hr style="border:1px solid #00BFFF; opacity:0.3;">
+    """, unsafe_allow_html=True)
     
     if falls is not None:
         st.subheader("Fall Events")
